@@ -19,6 +19,10 @@ ENV PATH=$PATH:${GOROOT}/bin
 
 WORKDIR /ws/code
 
+# 解决CA证书问题
+RUN apt update
+RUN apt install -y --no-install-recommends ca-certificates
+
 RUN go get
 
 RUN go build -o main
