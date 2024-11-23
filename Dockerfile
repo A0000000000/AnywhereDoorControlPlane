@@ -3,7 +3,8 @@ LABEL authors="maoyanluo"
 
 WORKDIR /ws
 
-ADD https://dl.google.com/go/go1.23.3.linux-amd64.tar.gz /ws
+#ADD https://dl.google.com/go/go1.23.3.linux-amd64.tar.gz /ws
+ADD https://mirrors.aliyun.com/golang/go1.23.3.linux-amd64.tar.gz /ws
 
 RUN tar -zxvf go1.23.3.linux-amd64.tar.gz
 
