@@ -75,11 +75,20 @@ func CreatePluginContext(dbCtx *db.DataBaseContext, httpServerCtx *rpc.HttpServe
 }
 
 func (ctx *PluginContext) Request(source model.Imsdk, target model.Plugin, data string) {
-	url := fmt.Sprintf("%s:%d%s/plugin", target.PluginHost, target.PluginPort, target.PluginPrefix)
+	url := fmt.Sprintf("http://%s:%d%s/plugin", target.PluginHost, target.PluginPort, target.PluginPrefix)
 	commData := model.CommonData{Data: data, Name: source.ImsdkName, Target: target.PluginName}
-	v, _ := json.Marshal(commData)
-	req, _ := http.NewRequest("POST", url, strings.NewReader(string(v)))
+	v, err := json.Marshal(commData)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	req, err := http.NewRequest("POST", url, strings.NewReader(string(v)))
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
 	req.Header.Add("token", target.PluginToken)
+	req.Header.Add("content-type", "application/json")
 	fmt.Println(url, string(v), data)
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {

@@ -81,11 +81,20 @@ func CreateImsdkContext(dbCtx *db.DataBaseContext, httpServerCtx *rpc.HttpServer
 }
 
 func (ctx *ImsdkContext) Request(source model.Plugin, target model.Imsdk, data string) {
-	url := fmt.Sprintf("%s:%d%s/imsdk", target.ImsdkHost, target.ImsdkPort, target.ImsdkPrefix)
+	url := fmt.Sprintf("http://%s:%d%s/imsdk", target.ImsdkHost, target.ImsdkPort, target.ImsdkPrefix)
 	commData := model.CommonData{Data: data, Name: source.PluginName, Target: target.ImsdkName}
-	v, _ := json.Marshal(commData)
-	req, _ := http.NewRequest("POST", url, strings.NewReader(string(v)))
+	v, err := json.Marshal(commData)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	req, err := http.NewRequest("POST", url, strings.NewReader(string(v)))
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
 	req.Header.Add("token", target.ImsdkToken)
+	req.Header.Add("content-type", "application/json")
 	fmt.Println(url, string(v), data)
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
