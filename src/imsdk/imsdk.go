@@ -111,6 +111,6 @@ func (ctx *ImsdkContext) Request(source model.Plugin, target model.Imsdk, data s
 	} else {
 		defer resp.Body.Close()
 		body, _ := io.ReadAll(resp.Body)
-		fmt.Println("resp = ", string(body))
+		fmt.Println(string(body))
 	}
 }
