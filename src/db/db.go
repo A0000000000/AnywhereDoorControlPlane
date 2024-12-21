@@ -1,6 +1,7 @@
 package db
 
 import (
+	"AnywhereDoorControlPlane/constant/db"
 	"AnywhereDoorControlPlane/model"
 	"fmt"
 	"gorm.io/driver/mysql"
@@ -13,37 +14,37 @@ type DataBaseContext struct {
 }
 
 func CreateDataBaseContext() *DataBaseContext {
-	db, err := gorm.Open(mysql.Open(getDSN()), &gorm.Config{})
+	database, err := gorm.Open(mysql.Open(getDSN()), &gorm.Config{})
 	if err != nil {
 		panic(err)
 	}
-	return &DataBaseContext{db: db}
+	return &DataBaseContext{db: database}
 }
 
 func getDSN() string {
-	dbIP := os.Getenv("DB_IP")
-	dbPort := os.Getenv("DB_PORT")
-	dbUser := os.Getenv("DB_USER")
-	dbPassword := os.Getenv("DB_PASSWORD")
-	dbName := os.Getenv("DB_NAME")
+	dbIP := os.Getenv(db.EnvDbIp)
+	dbPort := os.Getenv(db.EnvDbPort)
+	dbUser := os.Getenv(db.EnvDbUser)
+	dbPassword := os.Getenv(db.EnvDbPassword)
+	dbName := os.Getenv(db.EnvDbName)
 
 	if dbIP == "" {
-		dbIP = "192.168.25.7"
+		dbIP = db.DefaultDbIp
 	}
 	if dbPort == "" {
-		dbPort = "3306"
+		dbPort = db.DefaultDbPort
 	}
 	if dbUser == "" {
-		dbUser = "root"
+		dbUser = db.DefaultDbUser
 	}
 	if dbPassword == "" {
-		dbPassword = "09251205"
+		dbPassword = db.DefaultDbPassword
 	}
 	if dbName == "" {
-		dbName = "anywhere_door"
+		dbName = db.DefaultDbName
 	}
 
-	return fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?%s", dbUser, dbPassword, dbIP, dbPort, dbName, "time_zone='Asia%2FShanghai'")
+	return fmt.Sprintf(db.DsnTemplate, dbUser, dbPassword, dbIP, dbPort, dbName, db.TimeZone)
 }
 
 func (ctx *DataBaseContext) QueryPlugins(username string) []model.Plugin {
@@ -51,7 +52,7 @@ func (ctx *DataBaseContext) QueryPlugins(username string) []model.Plugin {
 	var user model.User
 	ctx.db.Model(model.User{Username: username}).First(&user)
 	if user.Id >= 0 {
-		ctx.db.Where("user_id = ?", user.Id).Find(&plugins)
+		ctx.db.Where(db.QueryUserIdSQLTemplate, user.Id).Find(&plugins)
 	}
 	return plugins
 }
@@ -61,7 +62,7 @@ func (ctx *DataBaseContext) QueryPlugin(username string, name string) model.Plug
 	var user model.User
 	ctx.db.Model(model.User{Username: username}).First(&user)
 	if user.Id >= 0 {
-		ctx.db.Where("user_id = ? AND plugin_name = ?", user.Id, name).First(&plugin)
+		ctx.db.Where(db.QueryPluginSQLTemplate, user.Id, name).First(&plugin)
 	}
 	return plugin
 }
@@ -71,7 +72,7 @@ func (ctx *DataBaseContext) QueryImsdks(username string) []model.Imsdk {
 	var user model.User
 	ctx.db.Model(model.User{Username: username}).First(&user)
 	if user.Id >= 0 {
-		ctx.db.Where("user_id = ?", user.Id).Find(&imsdks)
+		ctx.db.Where(db.QueryUserIdSQLTemplate, user.Id).Find(&imsdks)
 	}
 	return imsdks
 }
@@ -81,7 +82,7 @@ func (ctx *DataBaseContext) QueryImsdk(username string, name string) model.Imsdk
 	var user model.User
 	ctx.db.Model(model.User{Username: username}).First(&user)
 	if user.Id >= 0 {
-		ctx.db.Where("user_id = ? AND imsdk_name = ?", user.Id, name).First(&imsdk)
+		ctx.db.Where(db.QueryImsdkSQLTemplate, user.Id, name).First(&imsdk)
 	}
 	return imsdk
 }

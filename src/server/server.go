@@ -1,6 +1,9 @@
-package rpc
+package server
 
-import "github.com/gin-gonic/gin"
+import (
+	"AnywhereDoorControlPlane/constant/server"
+	"github.com/gin-gonic/gin"
+)
 
 type HttpServerContext struct {
 	router *gin.Engine
@@ -9,7 +12,7 @@ type HttpServerContext struct {
 func CreateHttpServer() *HttpServerContext {
 	router := gin.Default()
 	go func() {
-		err := router.Run(":80")
+		err := router.Run(server.Port)
 		if err != nil {
 			panic(err)
 		}

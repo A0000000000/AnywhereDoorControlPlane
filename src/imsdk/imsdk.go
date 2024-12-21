@@ -1,9 +1,12 @@
 package imsdk
 
 import (
+	"AnywhereDoorControlPlane/constant"
+	"AnywhereDoorControlPlane/constant/code"
+	"AnywhereDoorControlPlane/constant/message"
 	"AnywhereDoorControlPlane/db"
 	"AnywhereDoorControlPlane/model"
-	"AnywhereDoorControlPlane/rpc"
+	"AnywhereDoorControlPlane/server"
 	"encoding/json"
 	"fmt"
 	"github.com/gin-gonic/gin"
@@ -14,63 +17,69 @@ import (
 
 type ImsdkContext struct {
 	dbCtx         *db.DataBaseContext
-	httpServerCtx *rpc.HttpServerContext
+	httpServerCtx *server.HttpServerContext
 }
 
-func CreateImsdkContext(dbCtx *db.DataBaseContext, httpServerCtx *rpc.HttpServerContext, callback func(source model.Imsdk, target model.Plugin, data string)) *ImsdkContext {
-	httpServerCtx.Post("/imsdk", func(c *gin.Context) {
-		username := c.Request.Header.Get("username")
-		token := c.Request.Header.Get("token")
+func CreateImsdkContext(dbCtx *db.DataBaseContext, httpServerCtx *server.HttpServerContext, callback func(source model.Imsdk, target model.Plugin, data string)) *ImsdkContext {
+	httpServerCtx.Post(constant.ImsdkURI, func(c *gin.Context) {
+		username := c.Request.Header.Get(constant.Username)
+		token := c.Request.Header.Get(constant.Token)
 		if len(username) == 0 || len(token) == 0 {
-			c.JSON(200, map[string]any{
-				"code":    500,
-				"message": "username or token is empty",
+			c.JSON(constant.HttpStatusSuccess, model.Response{
+				Code: code.UsernameOrTokenEmpty,
+				Msg:  message.UsernameOrTokenEmpty,
+				Data: nil,
 			})
 			return
 		}
-		var commonData model.CommonData
-		err := c.ShouldBindJSON(&commonData)
+		var result model.Result
+		err := c.ShouldBindJSON(&result)
 		if err != nil {
-			c.JSON(200, map[string]any{
-				"code":    500,
-				"message": err.Error(),
+			c.JSON(constant.HttpStatusSuccess, model.Response{
+				Code: code.JsonParseError,
+				Msg:  message.JsonParseError,
+				Data: err.Error(),
 			})
 			return
 		}
 
-		imsdk := dbCtx.QueryImsdk(username, commonData.Name)
+		imsdk := dbCtx.QueryImsdk(username, result.Name)
 
-		if imsdk.ImsdkName != commonData.Name {
-			c.JSON(200, map[string]any{
-				"code":    500,
-				"message": "no such imsdk",
+		if imsdk.ImsdkName != result.Name {
+			c.JSON(constant.HttpStatusSuccess, model.Response{
+				Code: code.NoSuchImsdk,
+				Msg:  message.NoSuchImsdk,
+				Data: nil,
 			})
 			return
 		}
 
 		if imsdk.ImsdkToken != token {
-			c.JSON(200, map[string]any{
-				"code":    500,
-				"message": "token invalid",
+			c.JSON(constant.HttpStatusSuccess, model.Response{
+				Code: code.TokenInvalid,
+				Msg:  message.TokenInvalid,
+				Data: nil,
 			})
 			return
 		}
 
-		plugin := dbCtx.QueryPlugin(username, commonData.Target)
+		plugin := dbCtx.QueryPlugin(username, result.Target)
 
-		if plugin.PluginName != commonData.Target {
-			c.JSON(200, map[string]any{
-				"code":    500,
-				"message": "no such plugin",
+		if plugin.PluginName != result.Target {
+			c.JSON(constant.HttpStatusSuccess, model.Response{
+				Code: code.NoSuchPlugin,
+				Msg:  message.NoSuchPlugin,
+				Data: nil,
 			})
 			return
 		}
 
-		go callback(imsdk, plugin, commonData.Data)
+		go callback(imsdk, plugin, result.Data)
 
-		c.JSON(200, map[string]any{
-			"code":    200,
-			"message": "success",
+		c.JSON(constant.HttpStatusSuccess, model.Response{
+			Code: code.Success,
+			Msg:  message.Success,
+			Data: nil,
 		})
 	})
 
@@ -81,20 +90,20 @@ func CreateImsdkContext(dbCtx *db.DataBaseContext, httpServerCtx *rpc.HttpServer
 }
 
 func (ctx *ImsdkContext) Request(source model.Plugin, target model.Imsdk, data string) {
-	url := fmt.Sprintf("http://%s:%d%s/imsdk", target.ImsdkHost, target.ImsdkPort, target.ImsdkPrefix)
-	commData := model.CommonData{Data: data, Name: source.PluginName, Target: target.ImsdkName}
+	url := fmt.Sprintf(constant.ImsdkURLTemplate, target.ImsdkHost, target.ImsdkPort, target.ImsdkPrefix)
+	commData := model.Result{Data: data, Name: source.PluginName, Target: target.ImsdkName}
 	v, err := json.Marshal(commData)
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
-	req, err := http.NewRequest("POST", url, strings.NewReader(string(v)))
+	req, err := http.NewRequest(constant.Post, url, strings.NewReader(string(v)))
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
-	req.Header.Add("token", target.ImsdkToken)
-	req.Header.Add("content-type", "application/json")
+	req.Header.Add(constant.Token, target.ImsdkToken)
+	req.Header.Add(constant.ContentType, constant.ContentTypeJSON)
 	fmt.Println(url, string(v), data)
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {

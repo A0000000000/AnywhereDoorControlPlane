@@ -5,7 +5,7 @@ import (
 	"AnywhereDoorControlPlane/imsdk"
 	"AnywhereDoorControlPlane/model"
 	"AnywhereDoorControlPlane/plugin"
-	"AnywhereDoorControlPlane/rpc"
+	"AnywhereDoorControlPlane/server"
 	"os"
 	"os/signal"
 	"syscall"
@@ -13,7 +13,7 @@ import (
 
 func main() {
 	dbCtx := db.CreateDataBaseContext()
-	httpServerCtx := rpc.CreateHttpServer()
+	httpServerCtx := server.CreateHttpServer()
 	var imsdkCtx *imsdk.ImsdkContext = nil
 	var pluginCtx *plugin.PluginContext = nil
 
