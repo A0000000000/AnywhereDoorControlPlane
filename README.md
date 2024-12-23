@@ -17,8 +17,8 @@
     * target: 目标plugin名
     * data: 原始数据
   * ret:
-    * code: 错误码 200为无错误
-    * message: 错误信息
+    * code: 详见错误码枚举
+    * message: 详见错误信息枚举
 * 输出
   * url: /imsdk
   * method: post
@@ -59,4 +59,4 @@
 3. 打包镜像:
    * `docker buildx build --platform linux/amd64 -t 192.168.25.5:31100/maoyanluo/anywhere-door-control-plane:1.0 . --load`
 4. 创建容器:
-   * `docker run --name anywhere-door-control-plane -itd -p 8081:80 -e DB_IP=192.168.25.7 -e DB_PORT=3306 -e DB_NAME=anywhere_door -e DB_USER=root -e DB_PASSWORD=09251205 192.168.25.5:31100/maoyanluo/anywhere-door-control-plane:1.0`
+   * `docker run --name anywhere-door-control-plane -itd -p 8081:80 -e DB_IP=192.168.25.7 -e DB_PORT=3306 -e DB_NAME=anywhere_door -e DB_USER=root -e DB_PASSWORD=09251205 --restart=always 192.168.25.5:31100/maoyanluo/anywhere-door-control-plane:1.0`
