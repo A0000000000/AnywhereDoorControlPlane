@@ -41,8 +41,8 @@
         * target: 目标imsdk名
         * data: 原始数据
     * ret:
-        * code: 错误码 200为无错误
-        * message: 错误信息
+      * code: 详见错误码枚举
+      * message: 详见错误信息枚举
 * 输出
     * url: /plugin
     * method: post
