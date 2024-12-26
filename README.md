@@ -71,7 +71,7 @@
 
 ### Docker Command Line
 1. 创建容器:
-   * `docker run --name anywhere-door-control-plane -itd -p 8081:80 -e DB_IP=192.168.25.7 -e DB_PORT=3306 -e DB_NAME=anywhere_door -e DB_USER=root -e DB_PASSWORD=09251205 --restart=always 192.168.25.5:31100/maoyanluo/anywhere-door-control-plane:1.0`
+   * `docker run --name anywhere-door-control-plane -itd -p 8081:80 -e DB_IP=ip -e DB_PORT=port -e DB_NAME=anywhere_door -e DB_USER=user -e DB_PASSWORD=pwd --restart=always 192.168.25.5:31100/maoyanluo/anywhere-door-control-plane:1.0`
 
 
 ### Kubernetes
