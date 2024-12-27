@@ -81,6 +81,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: anywhere-door-control-plane-deployment
+  namespace: anywhere-door
 spec:
   replicas: 1
   selector:
@@ -114,6 +115,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: anywhere-door-control-plane-service
+  namespace: anywhere-door
   labels:
     app: anywhere-door-control-plane
 spec:
