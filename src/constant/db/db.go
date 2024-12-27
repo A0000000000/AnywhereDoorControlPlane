@@ -7,11 +7,11 @@ const (
 	EnvDbPassword = "DB_PASSWORD"
 	EnvDbName     = "DB_NAME"
 
-	DefaultDbIp       = "192.168.25.7"
-	DefaultDbPort     = "3306"
-	DefaultDbUser     = "root"
-	DefaultDbPassword = "09251205"
-	DefaultDbName     = "anywhere_door"
+	DefaultDbIp       = "default ip"
+	DefaultDbPort     = "default port"
+	DefaultDbUser     = "default user"
+	DefaultDbPassword = "default password"
+	DefaultDbName     = "default db"
 
 	DsnTemplate = "%s:%s@tcp(%s:%s)/%s?%s"
 	TimeZone    = "time_zone='Asia%2FShanghai'"
