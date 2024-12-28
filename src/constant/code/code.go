@@ -7,4 +7,5 @@ const (
 	NoSuchImsdk          = -3
 	TokenInvalid         = -4
 	NoSuchPlugin         = -5
+	NoSuchConfig         = -6
 )

@@ -10,6 +10,9 @@ const (
 	ImsdkURI         = "/imsdk"
 	ImsdkURLTemplate = "http://%s:%d%s/imsdk"
 
+	ImsdkConfigURI  = "/imsdk/config"
+	PluginConfigURI = "/plugin/config"
+
 	ContentType     = "content-type"
 	ContentTypeJSON = "application/json"
 

@@ -53,6 +53,36 @@
         * target: 目标plugin名(即当前plugin的名字, 用来校验使用)
         * data: 原始数据
 
+### config
+* imsdk配置
+  * url: /imsdk/config
+  * method: post
+  * header:
+    * username: 所属用户的用户名
+    * token: imsdk的token
+  * param:
+    * name: imsdk的名称
+    * config_key: 配置键
+  * ret:
+      * code: 详见错误码枚举
+      * message: 详见错误信息枚举
+      * data: 配置数据
+
+* plugin配置
+    * url: /plugin/config
+    * method: post
+    * header:
+        * username: 所属用户的用户名
+        * token: plugin的token
+    * param:
+        * name: plugin的名称
+        * config_key: 配置键
+    * ret:
+        * code: 详见错误码枚举
+        * message: 详见错误信息枚举
+        * data: 配置数据
+
+
 ## 环境变量
 * DB_IP: 数据库IP地址
 * DB_PORT: 数据库端口

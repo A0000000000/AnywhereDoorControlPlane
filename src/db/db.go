@@ -86,3 +86,25 @@ func (ctx *DataBaseContext) QueryImsdk(username string, name string) model.Imsdk
 	}
 	return imsdk
 }
+
+func (ctx *DataBaseContext) QueryPluginConfig(username string, pluginName string, configKey string) model.Config {
+	var config model.Config
+	var user model.User
+	ctx.db.Model(model.User{Username: username}).First(&user)
+	plugin := ctx.QueryPlugin(username, pluginName)
+	if user.Id >= 0 && plugin.Id > 0 {
+		ctx.db.Where(db.QueryPluginConfigSQLTemplate, user.Id, plugin.Id, configKey).First(&config)
+	}
+	return config
+}
+
+func (ctx *DataBaseContext) QueryImsdkConfig(username string, imsdkName string, configKey string) model.Config {
+	var config model.Config
+	var user model.User
+	ctx.db.Model(model.User{Username: username}).First(&user)
+	imsdk := ctx.QueryImsdk(username, imsdkName)
+	if user.Id >= 0 && imsdk.Id > 0 {
+		ctx.db.Where(db.QueryImsdkConfigSQLTemplate, user.Id, imsdk.Id, configKey).First(&config)
+	}
+	return config
+}

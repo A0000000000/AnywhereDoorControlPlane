@@ -11,3 +11,8 @@ type Response struct {
 	Msg  string `json:"message"`
 	Data any    `json:"data"`
 }
+
+type ConfigParams struct {
+	Name      string `json:"name"`
+	ConfigKey string `json:"config_key"`
+}
