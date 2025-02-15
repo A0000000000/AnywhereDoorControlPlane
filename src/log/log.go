@@ -121,7 +121,7 @@ func (ctx *LogContext) writeLogToDb(c *gin.Context, logType int) {
 	}
 	log.Tag = params.Tag
 	log.Log = params.Log
-	insertId := ctx.dbCtx.InsertLog(log)
+	insertId, _ := ctx.dbCtx.InsertLog(log)
 	c.JSON(constant.HttpStatusSuccess, model.Response{
 		Code: code.Success,
 		Msg:  message.Success,
@@ -129,7 +129,7 @@ func (ctx *LogContext) writeLogToDb(c *gin.Context, logType int) {
 	})
 }
 
-func (ctx *LogContext) saveGlobalLog(tag, msg string, level int) int {
+func (ctx *LogContext) saveGlobalLog(tag, msg string, level int) (int, error) {
 	if level < constant.LevelDebug {
 		level = constant.LevelDebug
 	}

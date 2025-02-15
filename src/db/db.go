@@ -89,12 +89,12 @@ func (ctx *DataBaseContext) QueryImsdkConfig(username string, imsdkName string, 
 	return config
 }
 
-func (ctx *DataBaseContext) InsertLog(log model.Log) int {
+func (ctx *DataBaseContext) InsertLog(log model.Log) (int, error) {
 	// gorm会在创建、更新、删除的时候自动开启事务，所以这里不需要手动开启事务了(前提是没有在创建db的时候，手动禁用了事务)
 	// @see https://gorm.io/zh_CN/docs/transactions.html
 	res := ctx.db.Create(&log)
 	if res.RowsAffected < 1 {
-		return -1
+		return -1, res.Error
 	}
-	return log.Id
+	return log.Id, nil
 }
