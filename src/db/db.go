@@ -27,23 +27,6 @@ func getDSN() string {
 	dbUser := os.Getenv(db.EnvDbUser)
 	dbPassword := os.Getenv(db.EnvDbPassword)
 	dbName := os.Getenv(db.EnvDbName)
-
-	if dbIP == "" {
-		dbIP = db.DefaultDbIp
-	}
-	if dbPort == "" {
-		dbPort = db.DefaultDbPort
-	}
-	if dbUser == "" {
-		dbUser = db.DefaultDbUser
-	}
-	if dbPassword == "" {
-		dbPassword = db.DefaultDbPassword
-	}
-	if dbName == "" {
-		dbName = db.DefaultDbName
-	}
-
 	return fmt.Sprintf(db.DsnTemplate, dbUser, dbPassword, dbIP, dbPort, dbName, db.TimeZone)
 }
 
@@ -56,15 +39,6 @@ func (ctx *DataBaseContext) QueryUser(username string) model.User {
 	return user
 }
 
-func (ctx *DataBaseContext) QueryPlugins(username string) []model.Plugin {
-	var plugins []model.Plugin
-	user := ctx.QueryUser(username)
-	if user.Id >= 0 {
-		ctx.db.Where(db.QueryUserIdSQLTemplate, user.Id).Find(&plugins)
-	}
-	return plugins
-}
-
 func (ctx *DataBaseContext) QueryPlugin(username string, name string) model.Plugin {
 	plugin := model.Plugin{}
 	user := ctx.QueryUser(username)
@@ -75,15 +49,6 @@ func (ctx *DataBaseContext) QueryPlugin(username string, name string) model.Plug
 		plugin.Id = -1
 	}
 	return plugin
-}
-
-func (ctx *DataBaseContext) QueryImsdks(username string) []model.Imsdk {
-	var imsdks []model.Imsdk
-	user := ctx.QueryUser(username)
-	if user.Id >= 0 {
-		ctx.db.Where(db.QueryUserIdSQLTemplate, user.Id).Find(&imsdks)
-	}
-	return imsdks
 }
 
 func (ctx *DataBaseContext) QueryImsdk(username string, name string) model.Imsdk {
@@ -125,6 +90,8 @@ func (ctx *DataBaseContext) QueryImsdkConfig(username string, imsdkName string, 
 }
 
 func (ctx *DataBaseContext) InsertLog(log model.Log) int {
+	// gorm会在创建、更新、删除的时候自动开启事务，所以这里不需要手动开启事务了(前提是没有在创建db的时候，手动禁用了事务)
+	// @see https://gorm.io/zh_CN/docs/transactions.html
 	res := ctx.db.Create(&log)
 	if res.RowsAffected < 1 {
 		return -1

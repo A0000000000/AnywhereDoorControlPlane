@@ -22,6 +22,7 @@ type PluginContext struct {
 }
 
 func CreatePluginContext(logCtx *log.LogContext, dbCtx *db.DataBaseContext, httpServerCtx *server.HttpServerContext, callback func(source model.Plugin, target model.Imsdk, data string)) *PluginContext {
+	TAG := "PluginContext"
 	httpServerCtx.Post(constant.PluginURI, func(c *gin.Context) {
 		username := c.Request.Header.Get(constant.Username)
 		token := c.Request.Header.Get(constant.Token)
@@ -36,12 +37,12 @@ func CreatePluginContext(logCtx *log.LogContext, dbCtx *db.DataBaseContext, http
 		var result model.Result
 		err := c.ShouldBindJSON(&result)
 		if err != nil {
-			fmt.Println(err)
 			c.JSON(constant.HttpStatusSuccess, model.Response{
 				Code: code.JsonParseError,
 				Msg:  message.JsonParseError,
 				Data: err.Error(),
 			})
+			logCtx.E(TAG, "bind json err. url: "+constant.PluginURI+", error: "+err.Error())
 			return
 		}
 
@@ -91,28 +92,33 @@ func CreatePluginContext(logCtx *log.LogContext, dbCtx *db.DataBaseContext, http
 	}
 }
 
-func (ctx *PluginContext) Request(source model.Imsdk, target model.Plugin, data string) {
+func (ctx *PluginContext) Request(logCtx *log.LogContext, source model.Imsdk, target model.Plugin, data string) {
+	TAG := "PluginRequest"
 	url := fmt.Sprintf(constant.PluginURLTemplate, target.PluginHost, target.PluginPort, target.PluginPrefix)
 	commData := model.Result{Data: data, Name: source.ImsdkName, Target: target.PluginName}
 	v, err := json.Marshal(commData)
 	if err != nil {
-		fmt.Println(err)
+		logCtx.E(TAG, "json err. error: "+err.Error())
 		return
 	}
 	req, err := http.NewRequest(constant.Post, url, strings.NewReader(string(v)))
 	if err != nil {
-		fmt.Println(err)
+		logCtx.E(TAG, "new request err. error: "+err.Error())
 		return
 	}
 	req.Header.Add(constant.Token, target.PluginToken)
 	req.Header.Add(constant.ContentType, constant.ContentTypeJSON)
-	fmt.Println(url, string(v), data)
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
-		fmt.Println(err)
+		logCtx.E(TAG, "do request err. error: "+err.Error())
 	} else {
-		defer resp.Body.Close()
-		body, _ := io.ReadAll(resp.Body)
-		fmt.Println(string(body))
+		_, err := io.ReadAll(resp.Body)
+		if err != nil {
+			logCtx.E(TAG, "read all resp err. error: "+err.Error())
+		}
+		err = resp.Body.Close()
+		if err != nil {
+			logCtx.E(TAG, "close resp body err. error: "+err.Error())
+		}
 	}
 }

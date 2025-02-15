@@ -12,6 +12,7 @@ import (
 )
 
 func InitConfigServer(logCtx *log.LogContext, dbCtx *db.DataBaseContext, httpServerCtx *server.HttpServerContext) {
+	TAG := "ConfigServer"
 	httpServerCtx.Post(constant.ImsdkConfigURI, func(c *gin.Context) {
 		username := c.Request.Header.Get(constant.Username)
 		token := c.Request.Header.Get(constant.Token)
@@ -31,6 +32,7 @@ func InitConfigServer(logCtx *log.LogContext, dbCtx *db.DataBaseContext, httpSer
 				Msg:  message.JsonParseError,
 				Data: err.Error(),
 			})
+			logCtx.E(TAG, "bind json err. url: "+constant.ImsdkConfigURI+", error: "+err.Error())
 			return
 		}
 
@@ -91,6 +93,7 @@ func InitConfigServer(logCtx *log.LogContext, dbCtx *db.DataBaseContext, httpSer
 				Msg:  message.JsonParseError,
 				Data: err.Error(),
 			})
+			logCtx.E(TAG, "bind json err. url: "+constant.PluginConfigURI+", error: "+err.Error())
 			return
 		}
 
@@ -131,5 +134,4 @@ func InitConfigServer(logCtx *log.LogContext, dbCtx *db.DataBaseContext, httpSer
 			Data: cfg,
 		})
 	})
-
 }

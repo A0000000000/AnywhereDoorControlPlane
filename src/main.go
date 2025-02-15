@@ -24,13 +24,13 @@ func main() {
 
 	imsdkCtx = imsdk.CreateImsdkContext(logCtx, dbCtx, httpServerCtx, func(source model.Imsdk, target model.Plugin, data string) {
 		if pluginCtx != nil {
-			pluginCtx.Request(source, target, data)
+			pluginCtx.Request(logCtx, source, target, data)
 		}
 	})
 
 	pluginCtx = plugin.CreatePluginContext(logCtx, dbCtx, httpServerCtx, func(source model.Plugin, target model.Imsdk, data string) {
 		if imsdkCtx != nil {
-			imsdkCtx.Request(source, target, data)
+			imsdkCtx.Request(logCtx, source, target, data)
 		}
 	})
 

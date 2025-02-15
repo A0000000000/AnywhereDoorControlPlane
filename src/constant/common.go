@@ -34,4 +34,6 @@ const (
 	LevelError = 4
 
 	HttpStatusSuccess = 200
+
+	GlobalLogUserId = -1
 )

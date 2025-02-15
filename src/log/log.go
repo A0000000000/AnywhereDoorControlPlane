@@ -8,6 +8,7 @@ import (
 	"AnywhereDoorControlPlane/model"
 	"AnywhereDoorControlPlane/server"
 	"github.com/gin-gonic/gin"
+	"time"
 )
 
 type LogContext struct {
@@ -126,4 +127,38 @@ func (ctx *LogContext) writeLogToDb(c *gin.Context, logType int) {
 		Msg:  message.Success,
 		Data: insertId,
 	})
+}
+
+func (ctx *LogContext) saveGlobalLog(tag, msg string, level int) int {
+	if level < constant.LevelDebug {
+		level = constant.LevelDebug
+	}
+	if level > constant.LevelError {
+		level = constant.LevelError
+	}
+	return ctx.dbCtx.InsertLog(model.Log{
+		Tag:       tag,
+		Log:       msg,
+		UserId:    constant.GlobalLogUserId,
+		Type:      constant.TypeControlPlane,
+		Level:     level,
+		TargetId:  0,
+		Timestamp: time.Now().Unix(),
+	})
+}
+
+func (ctx *LogContext) D(tag, msg string) {
+	ctx.saveGlobalLog(tag, msg, constant.LevelDebug)
+}
+
+func (ctx *LogContext) I(tag, msg string) {
+	ctx.saveGlobalLog(tag, msg, constant.LevelInfo)
+}
+
+func (ctx *LogContext) W(tag, msg string) {
+	ctx.saveGlobalLog(tag, msg, constant.LevelWarn)
+}
+
+func (ctx *LogContext) E(tag, msg string) {
+	ctx.saveGlobalLog(tag, msg, constant.LevelError)
 }

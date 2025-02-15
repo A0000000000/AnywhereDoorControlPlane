@@ -22,6 +22,7 @@ type ImsdkContext struct {
 }
 
 func CreateImsdkContext(logCtx *log.LogContext, dbCtx *db.DataBaseContext, httpServerCtx *server.HttpServerContext, callback func(source model.Imsdk, target model.Plugin, data string)) *ImsdkContext {
+	TAG := "ImsdkContext"
 	httpServerCtx.Post(constant.ImsdkURI, func(c *gin.Context) {
 		username := c.Request.Header.Get(constant.Username)
 		token := c.Request.Header.Get(constant.Token)
@@ -41,6 +42,7 @@ func CreateImsdkContext(logCtx *log.LogContext, dbCtx *db.DataBaseContext, httpS
 				Msg:  message.JsonParseError,
 				Data: err.Error(),
 			})
+			logCtx.E(TAG, "bind json err. url: "+constant.ImsdkURI+", error: "+err.Error())
 			return
 		}
 
@@ -90,28 +92,33 @@ func CreateImsdkContext(logCtx *log.LogContext, dbCtx *db.DataBaseContext, httpS
 	}
 }
 
-func (ctx *ImsdkContext) Request(source model.Plugin, target model.Imsdk, data string) {
+func (ctx *ImsdkContext) Request(logCtx *log.LogContext, source model.Plugin, target model.Imsdk, data string) {
+	TAG := "ImsdkRequest"
 	url := fmt.Sprintf(constant.ImsdkURLTemplate, target.ImsdkHost, target.ImsdkPort, target.ImsdkPrefix)
 	commData := model.Result{Data: data, Name: source.PluginName, Target: target.ImsdkName}
 	v, err := json.Marshal(commData)
 	if err != nil {
-		fmt.Println(err)
+		logCtx.E(TAG, "json err. error: "+err.Error())
 		return
 	}
 	req, err := http.NewRequest(constant.Post, url, strings.NewReader(string(v)))
 	if err != nil {
-		fmt.Println(err)
+		logCtx.E(TAG, "new request err. error: "+err.Error())
 		return
 	}
 	req.Header.Add(constant.Token, target.ImsdkToken)
 	req.Header.Add(constant.ContentType, constant.ContentTypeJSON)
-	fmt.Println(url, string(v), data)
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
-		fmt.Println(err)
+		logCtx.E(TAG, "do request err. error: "+err.Error())
 	} else {
-		defer resp.Body.Close()
-		body, _ := io.ReadAll(resp.Body)
-		fmt.Println(string(body))
+		_, err := io.ReadAll(resp.Body)
+		if err != nil {
+			logCtx.E(TAG, "read all resp err. error: "+err.Error())
+		}
+		err = resp.Body.Close()
+		if err != nil {
+			logCtx.E(TAG, "close resp body err. error: "+err.Error())
+		}
 	}
 }
