@@ -5,6 +5,7 @@ import (
 	"AnywhereDoorControlPlane/constant/code"
 	"AnywhereDoorControlPlane/constant/message"
 	"AnywhereDoorControlPlane/db"
+	"AnywhereDoorControlPlane/log"
 	"AnywhereDoorControlPlane/model"
 	"AnywhereDoorControlPlane/server"
 	"encoding/json"
@@ -20,7 +21,7 @@ type ImsdkContext struct {
 	httpServerCtx *server.HttpServerContext
 }
 
-func CreateImsdkContext(dbCtx *db.DataBaseContext, httpServerCtx *server.HttpServerContext, callback func(source model.Imsdk, target model.Plugin, data string)) *ImsdkContext {
+func CreateImsdkContext(logCtx *log.LogContext, dbCtx *db.DataBaseContext, httpServerCtx *server.HttpServerContext, callback func(source model.Imsdk, target model.Plugin, data string)) *ImsdkContext {
 	httpServerCtx.Post(constant.ImsdkURI, func(c *gin.Context) {
 		username := c.Request.Header.Get(constant.Username)
 		token := c.Request.Header.Get(constant.Token)

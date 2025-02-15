@@ -13,6 +13,9 @@ const (
 	ImsdkConfigURI  = "/imsdk/config"
 	PluginConfigURI = "/plugin/config"
 
+	ImsdkLogURL  = "/imsdk/log"
+	PluginLogURL = "/plugin/log"
+
 	ContentType     = "content-type"
 	ContentTypeJSON = "application/json"
 
@@ -20,6 +23,15 @@ const (
 	Post   = "POST"
 	Put    = "PUT"
 	Delete = "DELETE"
+
+	TypeControlPlane = 2
+	TypePlugin       = 3
+	TypeImsdk        = 4
+
+	LevelDebug = 1
+	LevelInfo  = 2
+	LevelWarn  = 3
+	LevelError = 4
 
 	HttpStatusSuccess = 200
 )

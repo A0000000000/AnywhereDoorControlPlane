@@ -4,6 +4,7 @@ import (
 	"AnywhereDoorControlPlane/config"
 	"AnywhereDoorControlPlane/db"
 	"AnywhereDoorControlPlane/imsdk"
+	"AnywhereDoorControlPlane/log"
 	"AnywhereDoorControlPlane/model"
 	"AnywhereDoorControlPlane/plugin"
 	"AnywhereDoorControlPlane/server"
@@ -18,15 +19,16 @@ func main() {
 	var imsdkCtx *imsdk.ImsdkContext = nil
 	var pluginCtx *plugin.PluginContext = nil
 
-	config.InitConfigServer(dbCtx, httpServerCtx)
+	logCtx := log.InitLogServer(dbCtx, httpServerCtx)
+	config.InitConfigServer(logCtx, dbCtx, httpServerCtx)
 
-	imsdkCtx = imsdk.CreateImsdkContext(dbCtx, httpServerCtx, func(source model.Imsdk, target model.Plugin, data string) {
+	imsdkCtx = imsdk.CreateImsdkContext(logCtx, dbCtx, httpServerCtx, func(source model.Imsdk, target model.Plugin, data string) {
 		if pluginCtx != nil {
 			pluginCtx.Request(source, target, data)
 		}
 	})
 
-	pluginCtx = plugin.CreatePluginContext(dbCtx, httpServerCtx, func(source model.Plugin, target model.Imsdk, data string) {
+	pluginCtx = plugin.CreatePluginContext(logCtx, dbCtx, httpServerCtx, func(source model.Plugin, target model.Imsdk, data string) {
 		if imsdkCtx != nil {
 			imsdkCtx.Request(source, target, data)
 		}

@@ -16,6 +16,7 @@ const (
 	DsnTemplate = "%s:%s@tcp(%s:%s)/%s?%s"
 	TimeZone    = "time_zone='Asia%2FShanghai'"
 
+	QueryUserSQLTemplate         = "username = ?"
 	QueryUserIdSQLTemplate       = "user_id = ?"
 	QueryPluginSQLTemplate       = "user_id = ? AND plugin_name = ?"
 	QueryImsdkSQLTemplate        = "user_id = ? AND imsdk_name = ?"

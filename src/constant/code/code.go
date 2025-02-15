@@ -8,4 +8,6 @@ const (
 	TokenInvalid         = -4
 	NoSuchPlugin         = -5
 	NoSuchConfig         = -6
+	UnknownLogType       = -7
+	NoSuchUser           = -8
 )

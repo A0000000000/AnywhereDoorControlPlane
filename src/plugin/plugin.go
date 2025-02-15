@@ -5,6 +5,7 @@ import (
 	"AnywhereDoorControlPlane/constant/code"
 	"AnywhereDoorControlPlane/constant/message"
 	"AnywhereDoorControlPlane/db"
+	"AnywhereDoorControlPlane/log"
 	"AnywhereDoorControlPlane/model"
 	"AnywhereDoorControlPlane/server"
 	"encoding/json"
@@ -20,7 +21,7 @@ type PluginContext struct {
 	httpServerCtx *server.HttpServerContext
 }
 
-func CreatePluginContext(dbCtx *db.DataBaseContext, httpServerCtx *server.HttpServerContext, callback func(source model.Plugin, target model.Imsdk, data string)) *PluginContext {
+func CreatePluginContext(logCtx *log.LogContext, dbCtx *db.DataBaseContext, httpServerCtx *server.HttpServerContext, callback func(source model.Plugin, target model.Imsdk, data string)) *PluginContext {
 	httpServerCtx.Post(constant.PluginURI, func(c *gin.Context) {
 		username := c.Request.Header.Get(constant.Username)
 		token := c.Request.Header.Get(constant.Token)

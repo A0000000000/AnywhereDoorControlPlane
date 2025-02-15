@@ -16,3 +16,11 @@ type ConfigParams struct {
 	Name      string `json:"name"`
 	ConfigKey string `json:"config_key"`
 }
+
+type LogParams struct {
+	Name      string `json:"name"`
+	Timestamp int64  `json:"timestamp"`
+	Level     int    `json:"level"`
+	Tag       string `json:"tag"`
+	Log       string `json:"log"`
+}

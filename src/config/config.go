@@ -5,12 +5,13 @@ import (
 	"AnywhereDoorControlPlane/constant/code"
 	"AnywhereDoorControlPlane/constant/message"
 	"AnywhereDoorControlPlane/db"
+	"AnywhereDoorControlPlane/log"
 	"AnywhereDoorControlPlane/model"
 	"AnywhereDoorControlPlane/server"
 	"github.com/gin-gonic/gin"
 )
 
-func InitConfigServer(dbCtx *db.DataBaseContext, httpServerCtx *server.HttpServerContext) {
+func InitConfigServer(logCtx *log.LogContext, dbCtx *db.DataBaseContext, httpServerCtx *server.HttpServerContext) {
 	httpServerCtx.Post(constant.ImsdkConfigURI, func(c *gin.Context) {
 		username := c.Request.Header.Get(constant.Username)
 		token := c.Request.Header.Get(constant.Token)
