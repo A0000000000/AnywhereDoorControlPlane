@@ -143,7 +143,7 @@ func (ctx *LogContext) saveGlobalLog(tag, msg string, level int) (int, error) {
 		Type:      constant.TypeControlPlane,
 		Level:     level,
 		TargetId:  0,
-		Timestamp: time.Now().Unix(),
+		Timestamp: time.Now().UnixMilli(),
 	})
 }
 
