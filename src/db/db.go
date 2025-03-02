@@ -98,3 +98,19 @@ func (ctx *DataBaseContext) InsertLog(log model.Log) (int, error) {
 	}
 	return log.Id, nil
 }
+
+func (ctx *DataBaseContext) InsertImsdk(imsdk model.Imsdk) (int, error) {
+	res := ctx.db.Create(&imsdk)
+	if res.RowsAffected < 1 {
+		return -1, res.Error
+	}
+	return imsdk.Id, nil
+}
+
+func (ctx *DataBaseContext) InsertPlugin(plugin model.Plugin) (int, error) {
+	res := ctx.db.Create(&plugin)
+	if res.RowsAffected < 1 {
+		return -1, res.Error
+	}
+	return plugin.Id, nil
+}

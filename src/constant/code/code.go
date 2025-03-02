@@ -10,4 +10,8 @@ const (
 	NoSuchConfig         = -6
 	UnknownLogType       = -7
 	NoSuchUser           = -8
+	ParamsError          = -9
+	UserNotExist         = -10
+	RegisterFailed       = -11
+	NameRepeat           = -12
 )

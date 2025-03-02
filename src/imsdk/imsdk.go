@@ -1,11 +1,11 @@
 package imsdk
 
 import (
+	"AnywhereDoorControlPlane/apis"
 	"AnywhereDoorControlPlane/constant"
 	"AnywhereDoorControlPlane/constant/code"
 	"AnywhereDoorControlPlane/constant/message"
 	"AnywhereDoorControlPlane/db"
-	"AnywhereDoorControlPlane/log"
 	"AnywhereDoorControlPlane/model"
 	"AnywhereDoorControlPlane/server"
 	"encoding/json"
@@ -21,7 +21,7 @@ type ImsdkContext struct {
 	httpServerCtx *server.HttpServerContext
 }
 
-func CreateImsdkContext(logCtx *log.LogContext, dbCtx *db.DataBaseContext, httpServerCtx *server.HttpServerContext, callback func(source model.Imsdk, target model.Plugin, data string)) *ImsdkContext {
+func CreateImsdkContext(logCtx *apis.LogContext, dbCtx *db.DataBaseContext, httpServerCtx *server.HttpServerContext, callback func(source model.Imsdk, target model.Plugin, data string)) *ImsdkContext {
 	TAG := "ImsdkContext"
 	httpServerCtx.Post(constant.ImsdkURI, func(c *gin.Context) {
 		username := c.Request.Header.Get(constant.Username)
@@ -92,7 +92,7 @@ func CreateImsdkContext(logCtx *log.LogContext, dbCtx *db.DataBaseContext, httpS
 	}
 }
 
-func (ctx *ImsdkContext) Request(logCtx *log.LogContext, source model.Plugin, target model.Imsdk, data string) {
+func (ctx *ImsdkContext) Request(logCtx *apis.LogContext, source model.Plugin, target model.Imsdk, data string) {
 	TAG := "ImsdkRequest"
 	url := fmt.Sprintf(constant.ImsdkURLTemplate, target.ImsdkHost, target.ImsdkPort, target.ImsdkPrefix)
 	commData := model.Result{Data: data, Name: source.PluginName, Target: target.ImsdkName}

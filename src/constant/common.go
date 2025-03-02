@@ -13,6 +13,9 @@ const (
 	ImsdkConfigURI  = "/imsdk/config"
 	PluginConfigURI = "/plugin/config"
 
+	ImsdkRegisterURI  = "/imsdk/register"
+	PluginRegisterURI = "/plugin/register"
+
 	ImsdkLogURL  = "/imsdk/log"
 	PluginLogURL = "/plugin/log"
 

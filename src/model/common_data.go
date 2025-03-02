@@ -24,3 +24,10 @@ type LogParams struct {
 	Tag       string `json:"tag"`
 	Log       string `json:"log"`
 }
+
+type RegisterParams struct {
+	Name   string `json:"name"`
+	Host   string `json:"host"`
+	Port   int    `json:"port"`
+	Prefix string `json:"prefix"`
+}

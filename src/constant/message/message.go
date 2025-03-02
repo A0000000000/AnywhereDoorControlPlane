@@ -10,4 +10,8 @@ const (
 	NoSuchConfig         = "NO_SUCH_CONFIG"
 	UnknownLogType       = "UNKNOWN_LOG_TYPE"
 	NoSuchUser           = "NO_SUCH_USER"
+	ParamsError          = "PARAMS_ERROR"
+	UserNotExist         = "USER_NOT_EXIST"
+	RegisterFailed       = "REGISTER_FAILED"
+	NameRepeat           = "NAME_REPEAT"
 )

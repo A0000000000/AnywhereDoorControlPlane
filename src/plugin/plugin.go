@@ -1,11 +1,11 @@
 package plugin
 
 import (
+	"AnywhereDoorControlPlane/apis"
 	"AnywhereDoorControlPlane/constant"
 	"AnywhereDoorControlPlane/constant/code"
 	"AnywhereDoorControlPlane/constant/message"
 	"AnywhereDoorControlPlane/db"
-	"AnywhereDoorControlPlane/log"
 	"AnywhereDoorControlPlane/model"
 	"AnywhereDoorControlPlane/server"
 	"encoding/json"
@@ -21,7 +21,7 @@ type PluginContext struct {
 	httpServerCtx *server.HttpServerContext
 }
 
-func CreatePluginContext(logCtx *log.LogContext, dbCtx *db.DataBaseContext, httpServerCtx *server.HttpServerContext, callback func(source model.Plugin, target model.Imsdk, data string)) *PluginContext {
+func CreatePluginContext(logCtx *apis.LogContext, dbCtx *db.DataBaseContext, httpServerCtx *server.HttpServerContext, callback func(source model.Plugin, target model.Imsdk, data string)) *PluginContext {
 	TAG := "PluginContext"
 	httpServerCtx.Post(constant.PluginURI, func(c *gin.Context) {
 		username := c.Request.Header.Get(constant.Username)
@@ -92,7 +92,7 @@ func CreatePluginContext(logCtx *log.LogContext, dbCtx *db.DataBaseContext, http
 	}
 }
 
-func (ctx *PluginContext) Request(logCtx *log.LogContext, source model.Imsdk, target model.Plugin, data string) {
+func (ctx *PluginContext) Request(logCtx *apis.LogContext, source model.Imsdk, target model.Plugin, data string) {
 	TAG := "PluginRequest"
 	url := fmt.Sprintf(constant.PluginURLTemplate, target.PluginHost, target.PluginPort, target.PluginPrefix)
 	commData := model.Result{Data: data, Name: source.ImsdkName, Target: target.PluginName}

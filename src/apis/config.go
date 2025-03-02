@@ -1,17 +1,16 @@
-package config
+package apis
 
 import (
 	"AnywhereDoorControlPlane/constant"
 	"AnywhereDoorControlPlane/constant/code"
 	"AnywhereDoorControlPlane/constant/message"
 	"AnywhereDoorControlPlane/db"
-	"AnywhereDoorControlPlane/log"
 	"AnywhereDoorControlPlane/model"
 	"AnywhereDoorControlPlane/server"
 	"github.com/gin-gonic/gin"
 )
 
-func InitConfigServer(logCtx *log.LogContext, dbCtx *db.DataBaseContext, httpServerCtx *server.HttpServerContext) {
+func InitConfigServer(logCtx *LogContext, dbCtx *db.DataBaseContext, httpServerCtx *server.HttpServerContext) {
 	TAG := "ConfigServer"
 	httpServerCtx.Post(constant.ImsdkConfigURI, func(c *gin.Context) {
 		username := c.Request.Header.Get(constant.Username)
